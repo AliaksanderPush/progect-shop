@@ -1,14 +1,28 @@
 import React, { useState } from "react";
+import { auth } from "../../firebase";
+import {toast } from 'react-toastify';
+import './Register.css';
 
 const Register = () => {
 
   const [email, setEmail] = useState('');
 
- const handleSubmit = () => {
-  //
+ const handleSubmit = async (e) => {
+   e.preventDefault();
+   const config = {
+     url: 'http://localhost:3000/register/complete',
+     handleCodeInApp:true
+   }
+
+   await auth.sendSignInLinkToEmail(email, config);
+   toast.success(`Email is sent to ${email}.Click the link to complete your registration`);
+   localStorage.setItem('emailForRegistartion', email);
+   setEmail('')
  }
+
  const handleChange = (e) => {
    setEmail(e.target.value);
+  
  }
 
   const registerForm = () => <form onSubmit={handleSubmit} >
@@ -18,7 +32,7 @@ const Register = () => {
       onChange ={handleChange}
       autoFocus
      />
-     <button type="submit" className="btn btn-raised" >Submit</button>
+     <button type="submit" className="btn btn-raised _btn" >Submit</button>
   </form>
   return (
     <div className="container">
@@ -27,9 +41,8 @@ const Register = () => {
           <h4>Register</h4>
           {registerForm()}
         </div>
-      </div>
-      
-    </div>
+       </div>
+     </div>
   );
 };
 
